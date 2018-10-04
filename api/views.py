@@ -88,16 +88,17 @@ def login_user():
 def place_food_order(current_user):
     user_id = request.json['user_id']
     item_id = request.json['item_id']
+    foodname = request.json['foodname']
     quantity = request.json['quantity']
     location = request.json['location']
-    conn.place_order(user_id, item_id, quantity, location)
+    conn.place_order(user_id, item_id,foodname, quantity, location)
     return jsonify({'message': 'food order has been added'}), 201   
 
 @app.route('/menu', methods=['POST'])
 @token_required
 def add_menu(current_user):
     if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function'}), 401
+        return jsonify({'message': 'Cannot perform that function'}), 403
 
     foodname = request.json['foodname']
     price = request.json['price']
@@ -114,7 +115,7 @@ def get_menu(current_user):
 @token_required
 def get_all_orders(current_user):
     if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function'}), 401
+        return jsonify({'message': 'Cannot perform that function'}), 403
 
     all_orders = conn.get_orders()  
     return jsonify({'all orders': all_orders})
@@ -124,17 +125,17 @@ def get_all_orders(current_user):
 @token_required
 def update_order_status(current_user,orderId):
     if not current_user.admin:
-        return jsonify({'message': 'Cannot perform that function'}), 401
+        return jsonify({'message': 'Cannot perform that function'}), 403
 
     status = request.json['status']
     conn.update_order_status(orderId, status)
     return jsonify({'status': 'your status has been updated'}), 200
     
-@app.route('/users/orders', methods=['GET'])
+@app.route('/users/orders/<int:userId>', methods=['GET'])
 @token_required
-def get_orders_history(current_user):
-    order_history = conn.get_order_history
-    return jsonify({'my orders' : order_history})   
+def get_orders_history(current_user, userId):
+    order_history = conn.get_order_history(userId)
+    return jsonify({'orderId' : order_history})
 
 
 
