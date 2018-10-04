@@ -1,13 +1,20 @@
 import psycopg2
+import os
 
 class Connection:
     def __init__(self):
-        credentials = """
-                dbname='fastfoods' user='postgres' password='asiimwe'
-                host='localhost' port='5432'
-                """
         try:
-            self.connection = psycopg2.connect(credentials)
+            postgres_bd = 'fastfoods'
+
+            if os.getenv('SETTING') == 'testing':
+                postgres_bd='postgres'
+
+            self.connection = psycopg2.connect(dbname=postgres_bd,
+                                            user='postgres',
+                                            password='asiimwe',
+                                            host='localhost',
+                                            port='5432'
+                                            )
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
             print('Connected to database')
@@ -39,7 +46,7 @@ class Connection:
             ('{}', '{}', '{}', False);".format(username, email, password)
         self.cursor.execute(query)
 
-    
+   
     def put_food(self, foodname, price):
         query = "INSERT INTO menu (foodname, price) VALUES ('{}', '{}');"\
 			.format(foodname, price)
@@ -63,8 +70,8 @@ class Connection:
         menu = self.cursor.fetchall()
         return menu
 
-    def get_an_order(self, column, value):
-        query = "SELECT * FROM orders WHERE {} = '{}';".format(column, value)
+    def get_specific_order(self, order_id):
+        query = "SELECT * FROM orders WHERE {} = '{}';".format(order_id, order_id)
         self.cursor.execute(query)
         user = self.cursor.fetchone()
         return user
@@ -93,7 +100,17 @@ class Connection:
         history = self.cursor.fetchall()
         return history
 
+    def make_admin(self):
+        query = "UPDATE users SET admin = {} WHERE user_id = '{}';\
+		".format(True, 1)
+        self.cursor.execute(query)
+
+           
+
   
+Connection() 
+
+
 #Connection().create_tables()    
 #Connection().put_food('beef', 1000)
 #Connection().add_user('dorothy', 'dorotheeasiimwe@gmail.com', 'password')
