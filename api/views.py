@@ -4,8 +4,8 @@ import jwt
 from flask import Flask, jsonify, make_response, request
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-from database import Connection
-from models import User
+from .database import Connection
+from .models import User
 
 app = Flask(__name__)
 
@@ -30,9 +30,10 @@ def token_required(f):
             data = jwt.decode(token, app.config['SECRET_KEY'])
 
             db_user = conn.get_user('email', data['email'])
-
+ 
             current_user = User(db_user[0], db_user[1], db_user[2], 
                             db_user[3], db_user[4])
+            current_user.admin = data['admin']
         except:
             return jsonify({'message':'Token is invalid'}), 401
         return f(current_user, *args, **kwargs)
@@ -137,7 +138,3 @@ def get_orders_history(current_user):
 
 
 
-if __name__ == '__main__':
-    conn.create_tables()
-    conn.make_admin()
-    app.run() 
