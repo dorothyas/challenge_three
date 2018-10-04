@@ -38,7 +38,7 @@ class Connection:
 			( order_id SERIAL PRIMARY KEY, \
 			user_id INTEGER NOT NULL REFERENCES users(user_id), \
 			item_id INTEGER NOT NULL REFERENCES menu(item_id), \
-			quantity INTEGER, location VARCHAR(100), status VARCHAR(10));"
+            foodname VARCHAR(100), quantity INTEGER, location VARCHAR(100), status VARCHAR(10));"
         self.cursor.execute(create_table)
 
     def add_user(self, username, email, password):
@@ -83,8 +83,8 @@ class Connection:
         return user
 
 
-    def place_order(self, user_id, item_id, quantity, location):
-        query = "INSERT INTO orders (user_id, item_id, quantity, location, status) VALUES ('{}', '{}', '{}', '{}', 'pending');".format(user_id, item_id, quantity, location)
+    def place_order(self, user_id, item_id, foodname, quantity, location):
+        query = "INSERT INTO orders (user_id, item_id, foodname, quantity, location, status) VALUES ('{}', '{}', '{}', '{}', '{}', 'pending');".format(user_id, item_id, foodname, quantity, location)
         self.cursor.execute(query)
 
 
