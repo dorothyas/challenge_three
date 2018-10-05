@@ -1,5 +1,7 @@
-# challenge_three
+# Fast-Food-Fast
 
+ Fast-Food-Fast is a food delivery service app for a restaurant.
+ 
 ## Functionality
 - Create user accounts that can signin/signout from the app.
 - Place an order for food.
