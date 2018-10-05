@@ -24,10 +24,7 @@ class Connection:
 
 
     def create_tables(self):
-
-        create_table = "CREATE TABLE IF NOT EXISTS users\
-         ( user_id SERIAL PRIMARY KEY, username VARCHAR(10),\
-          email VARCHAR(100), password VARCHAR(100), admin BOOLEAN NOT NULL);"
+        create_table = "CREATE TABLE IF NOT EXISTS users ( user_id SERIAL PRIMARY KEY, username VARCHAR(10), email VARCHAR(100), password VARCHAR(100), admin BOOLEAN NOT NULL);"
         self.cursor.execute(create_table)
         
         create_table = "CREATE TABLE IF NOT EXISTS menu \
@@ -76,7 +73,13 @@ class Connection:
         user = self.cursor.fetchone()
         return user
 
-    def get_user(self, column, value):
+    def find_food(self, column, value):
+        query = "SELECT * FROM menu WHERE {} = '{}';".format(column, value)
+        self.cursor.execute(query)
+        food = self.cursor.fetchone()
+        return food    
+
+    def find_user(self, column, value):
         query = "SELECT * FROM users WHERE {} = '{}';".format(column, value)
         self.cursor.execute(query)
         user = self.cursor.fetchone()
@@ -84,7 +87,9 @@ class Connection:
 
 
     def place_order(self, user_id, item_id, foodname, quantity, location):
-        query = "INSERT INTO orders (user_id, item_id, foodname, quantity, location, status) VALUES ('{}', '{}', '{}', '{}', '{}', 'pending');".format(user_id, item_id, foodname, quantity, location)
+        query = "INSERT INTO orders (user_id, item_id, foodname, quantity, location, status) VALUES\
+         ('{}', '{}', '{}', '{}', '{}', 'pending');".format(user_id, item_id, foodname, quantity, 
+         location)
         self.cursor.execute(query)
 
 
@@ -108,7 +113,7 @@ class Connection:
            
 
   
-#Connection() 
+#Connection().find_food
 
 
 #Connection().create_tables()    
